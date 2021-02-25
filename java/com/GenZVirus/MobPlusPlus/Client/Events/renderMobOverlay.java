@@ -19,6 +19,7 @@ import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.event.ClickEvent;
@@ -67,6 +68,7 @@ public class renderMobOverlay {
 	
 	@SubscribeEvent
 	public static void RenderName(RenderNameplateEvent event) {
+		if(event.getEntity() instanceof PlayerEntity && ModList.get().isLoaded("simplenameplate")) return;
 		event.setResult(Result.DENY);
 
 	}

@@ -28,6 +28,7 @@ import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.ModList;
 
 public class OverlayRenderer {
 
@@ -43,7 +44,8 @@ public class OverlayRenderer {
 
 	public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, LivingEntity entitylivingbaseIn) {
 		XMLFileJava.checkFileAndMake();
-		this.renderName(entitylivingbaseIn, entitylivingbaseIn.getName().getString(), matrixStackIn, bufferIn, packedLightIn);
+		if (!ModList.get().isLoaded("simplenameplate"))
+			this.renderName(entitylivingbaseIn, entitylivingbaseIn.getName().getString(), matrixStackIn, bufferIn, packedLightIn);
 		this.renderHealthBar(matrixStackIn, bufferIn, packedLightIn, entitylivingbaseIn);
 		String percentage = ((int) (entitylivingbaseIn.getHealth() / entitylivingbaseIn.getMaxHealth() * 100)) + "%";
 		this.renderPercentage(entitylivingbaseIn, percentage, matrixStackIn, bufferIn, packedLightIn);
@@ -154,7 +156,9 @@ public class OverlayRenderer {
 		});
 		RenderState.AlphaState DEFAULT_ALPHA = new RenderState.AlphaState(0.003921569F);
 		Matrix4f matrix4f = matrixStackIn.getLast().getMatrix();
-		IVertexBuilder bar = bufferIn.getBuffer(RenderType.makeType("mppbar", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, 7, 65536, RenderType.State.getBuilder().transparency(TRANSLUCENT_TRANSPARENCY).texture(new RenderState.TextureState(new ResourceLocation(MobPlusPlus.MOD_ID, "textures/bar.png"), false, true)).alpha(DEFAULT_ALPHA).cull(new RenderState.CullState(false)).lightmap(new RenderState.LightmapState(true)).build(true)));
+		IVertexBuilder bar = bufferIn.getBuffer(RenderType.makeType("mppbar", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, 7, 65536,
+				RenderType.State.getBuilder().transparency(TRANSLUCENT_TRANSPARENCY).texture(new RenderState.TextureState(new ResourceLocation(MobPlusPlus.MOD_ID, "textures/bar.png"), false, true))
+						.alpha(DEFAULT_ALPHA).cull(new RenderState.CullState(false)).lightmap(new RenderState.LightmapState(true)).build(true)));
 
 		/***************************
 		 * 
@@ -164,7 +168,10 @@ public class OverlayRenderer {
 
 		float length = 1.0F;
 		addVertexPairBackground(bar, matrix4f, packedLightIn, length);
-		bar = bufferIn.getBuffer(RenderType.makeType("mpphealthbar", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, 7, 65536, RenderType.State.getBuilder().transparency(TRANSLUCENT_TRANSPARENCY).texture(new RenderState.TextureState(new ResourceLocation(MobPlusPlus.MOD_ID, "textures/health_bar_fill.png"), false, true)).alpha(DEFAULT_ALPHA).cull(new RenderState.CullState(false)).lightmap(new RenderState.LightmapState(true)).build(true)));
+		bar = bufferIn.getBuffer(RenderType.makeType("mpphealthbar", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, 7, 65536,
+				RenderType.State.getBuilder().transparency(TRANSLUCENT_TRANSPARENCY)
+						.texture(new RenderState.TextureState(new ResourceLocation(MobPlusPlus.MOD_ID, "textures/health_bar_fill.png"), false, true)).alpha(DEFAULT_ALPHA)
+						.cull(new RenderState.CullState(false)).lightmap(new RenderState.LightmapState(true)).build(true)));
 		length = entityIn.getHealth() / entityIn.getMaxHealth();
 
 		/***************************
@@ -207,11 +214,13 @@ public class OverlayRenderer {
 		bufferIn.pos(matrixIn, x, 0, z).color(RED, GREEN, BLUE, 1.0F).tex(1, 0).lightmap(packedLight).endVertex();
 	}
 
-	public static int renderString(String text, float x, float y, int color, boolean dropShadow, Matrix4f matrix, IRenderTypeBuffer buffer, boolean transparentIn, int colorBackgroundIn, int packedLight) {
+	public static int renderString(String text, float x, float y, int color, boolean dropShadow, Matrix4f matrix, IRenderTypeBuffer buffer, boolean transparentIn, int colorBackgroundIn,
+			int packedLight) {
 		return renderStringAt(text, x, y, color, dropShadow, matrix, buffer, transparentIn, colorBackgroundIn, packedLight);
 	}
 
-	private static int renderStringAt(String text, float x, float y, int color, boolean dropShadow, Matrix4f matrix, IRenderTypeBuffer buffer, boolean transparentIn, int colorBackgroundIn, int packedLight) {
+	private static int renderStringAt(String text, float x, float y, int color, boolean dropShadow, Matrix4f matrix, IRenderTypeBuffer buffer, boolean transparentIn, int colorBackgroundIn,
+			int packedLight) {
 		EntityRendererManager renderManager = Minecraft.getInstance().getRenderManager();
 		FontRenderer fontrenderer = renderManager.getFontRenderer();
 		boolean bidiFlag = fontrenderer.getBidiFlag();
@@ -233,7 +242,8 @@ public class OverlayRenderer {
 		return (int) x + (dropShadow ? 1 : 0);
 	}
 
-	private static float renderStringAtPos(String text, float x, float y, int color, boolean isShadow, Matrix4f matrix, IRenderTypeBuffer buffer, boolean isTransparent, int colorBackgroundIn, int packedLight) {
+	private static float renderStringAtPos(String text, float x, float y, int color, boolean isShadow, Matrix4f matrix, IRenderTypeBuffer buffer, boolean isTransparent, int colorBackgroundIn,
+			int packedLight) {
 		float f = isShadow ? 0.25F : 1.0F;
 		float f1 = (float) (color >> 16 & 255) / 255.0F * f;
 		float f2 = (float) (color >> 8 & 255) / 255.0F * f;
@@ -367,7 +377,8 @@ public class OverlayRenderer {
 		protected final float b;
 		protected final float a;
 
-		public Effect(float p_i225923_1_, float p_i225923_2_, float p_i225923_3_, float p_i225923_4_, float p_i225923_5_, float p_i225923_6_, float p_i225923_7_, float p_i225923_8_, float p_i225923_9_) {
+		public Effect(float p_i225923_1_, float p_i225923_2_, float p_i225923_3_, float p_i225923_4_, float p_i225923_5_, float p_i225923_6_, float p_i225923_7_, float p_i225923_8_,
+				float p_i225923_9_) {
 			this.x0 = p_i225923_1_;
 			this.y0 = p_i225923_2_;
 			this.x1 = p_i225923_3_;
