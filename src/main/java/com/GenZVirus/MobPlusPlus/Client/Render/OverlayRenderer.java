@@ -20,6 +20,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Quaternion;
@@ -44,8 +45,9 @@ public class OverlayRenderer {
 
 	public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, LivingEntity entitylivingbaseIn) {
 		XMLFileJava.checkFileAndMake();
-		if (!ModList.get().isLoaded("simplenameplate"))
+		if (!ModList.get().isLoaded("simplenameplate") || !(entitylivingbaseIn instanceof PlayerEntity)) {
 			this.renderName(entitylivingbaseIn, entitylivingbaseIn.getName().getString(), matrixStackIn, bufferIn, packedLightIn);
+		}
 		this.renderHealthBar(matrixStackIn, bufferIn, packedLightIn, entitylivingbaseIn);
 		String percentage = ((int) (entitylivingbaseIn.getHealth() / entitylivingbaseIn.getMaxHealth() * 100)) + "%";
 		this.renderPercentage(entitylivingbaseIn, percentage, matrixStackIn, bufferIn, packedLightIn);

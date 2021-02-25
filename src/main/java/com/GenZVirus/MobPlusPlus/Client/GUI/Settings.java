@@ -242,7 +242,7 @@ public class Settings extends Screen {
 		AbstractGui.blit(new MatrixStack(), posX * 10, posY * 10, 0, 0, 0, 160, 160, 160, 160);
 		RenderSystem.disableBlend();
 		RenderSystem.scalef(10.0F, 10.0F, 10.0F);
-		mc.fontRenderer.drawString(new MatrixStack(), "Mob++", posX + 28, posY + 4, 0xFFFFFFFF);
+		mc.fontRenderer.drawString(new MatrixStack(), "GenZVirus", posX + 28, posY + 4, 0xFFFFFFFF);
 	}
 
 	/****************************
